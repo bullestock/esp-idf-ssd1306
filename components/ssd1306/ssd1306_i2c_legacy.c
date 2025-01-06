@@ -47,7 +47,7 @@ void i2c_master_init(SSD1306_t * dev, int16_t sda, int16_t scl, int16_t reset)
 	dev->_flip = false;
 }
 
-void i2c_init(SSD1306_t * dev, int width, int height) {
+bool i2c_init(SSD1306_t * dev, int width, int height) {
 	dev->_width = width;
 	dev->_height = height;
 	dev->_pages = 8;
@@ -99,12 +99,13 @@ void i2c_init(SSD1306_t * dev, int width, int height) {
 	i2c_master_stop(cmd);
 
 	esp_err_t res = i2c_master_cmd_begin(I2C_NUM, cmd, I2C_TICKS_TO_WAIT);
+	i2c_cmd_link_delete(cmd);
 	if (res == ESP_OK) {
 		ESP_LOGI(TAG, "OLED configured successfully");
-	} else {
-		ESP_LOGE(TAG, "OLED configuration failed. code: 0x%.2X", res);
+                return true;
 	}
-	i2c_cmd_link_delete(cmd);
+        ESP_LOGE(TAG, "OLED configuration failed. code: 0x%.2X", res);
+	return false;
 }
 
 

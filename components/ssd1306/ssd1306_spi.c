@@ -111,7 +111,7 @@ bool spi_master_write_data(SSD1306_t * dev, const uint8_t* Data, size_t DataLeng
 }
 
 
-void spi_init(SSD1306_t * dev, int width, int height)
+bool spi_init(SSD1306_t * dev, int width, int height)
 {
 	dev->_width = width;
 	dev->_height = height;
@@ -154,6 +154,8 @@ void spi_init(SSD1306_t * dev, int width, int height)
 	spi_master_write_command(dev, OLED_CMD_DEACTIVE_SCROLL);		// 2E
 	spi_master_write_command(dev, OLED_CMD_DISPLAY_NORMAL);			// A6
 	spi_master_write_command(dev, OLED_CMD_DISPLAY_ON);				// AF
+
+        return true;
 }
 
 

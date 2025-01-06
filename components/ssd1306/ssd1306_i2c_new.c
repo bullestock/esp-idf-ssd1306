@@ -70,7 +70,7 @@ void i2c_master_init(SSD1306_t * dev, int16_t sda, int16_t scl, int16_t reset)
 	dev->_flip = false;
 }
 
-void i2c_init(SSD1306_t * dev, int width, int height) {
+bool i2c_init(SSD1306_t * dev, int width, int height) {
 	dev->_width = width;
 	dev->_height = height;
 	dev->_pages = 8;
@@ -121,9 +121,10 @@ void i2c_init(SSD1306_t * dev, int width, int height) {
 	res = i2c_master_transmit(dev_handle, out_buf, out_index, I2C_TICKS_TO_WAIT);
 	if (res == ESP_OK) {
 		ESP_LOGI(TAG, "OLED configured successfully");
-	} else {
-		ESP_LOGE(TAG, "Could not write to device [0x%02x at %d]: %d (%s)", dev->_address, I2C_NUM, res, esp_err_to_name(res));
-	}
+                return true;
+	} 
+        ESP_LOGE(TAG, "Could not write to device [0x%02x at %d]: %d (%s)", dev->_address, I2C_NUM, res, esp_err_to_name(res));
+	return false;
 }
 
 

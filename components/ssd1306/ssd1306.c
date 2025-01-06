@@ -17,17 +17,20 @@ typedef union out_column_t {
 	uint8_t  u8[4];
 } PACK8 out_column_t;
 
-void ssd1306_init(SSD1306_t * dev, int width, int height)
+bool ssd1306_init(SSD1306_t * dev, int width, int height)
 {
 	if (dev->_address == SPI_ADDRESS) {
-		spi_init(dev, width, height);
+            if (!spi_init(dev, width, height))
+                return false;
 	} else {
-		i2c_init(dev, width, height);
+            if (!i2c_init(dev, width, height))
+                return false;
 	}
 	// Initialize internal buffer
 	for (int i=0;i<dev->_pages;i++) {
 		memset(dev->_page[i]._segs, 0, 128);
 	}
+        return true;
 }
 
 int ssd1306_get_width(SSD1306_t * dev)
